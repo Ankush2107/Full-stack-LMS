@@ -12,4 +12,4 @@ const isLoggedIn = async (req, res, next) => {
     next();
 }
 
-export default isLoggedIn;
+export { isLoggedIn };

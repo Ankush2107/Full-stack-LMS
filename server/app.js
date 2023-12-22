@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import userRoutes from './routes/user.routes.js'
 import errorMiddleware from './middlewares/error.middleware.js';
 
+// intializing express
 const app = express();
 
 // middleware

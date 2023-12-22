@@ -1,5 +1,7 @@
 import AppEroor from "../utils/error.util.js";
 import User from "../models/user.model.js";
+import cloudinary from 'cloudinary';
+import fs from 'fs/promises';
 
 // Ensures that the authentication token cookie is secure and has an expiration time.
 const cookieOptions = {
@@ -38,7 +40,29 @@ const register = async (req, res, next) => {
         return next(new AppEroor("User registration failed please try again", 400))
     }
 
-    // TODO: File upload
+    // File upload
+
+    if(req.file) {
+        try {
+            const result = await cloudinary.v2.uploader.upload(req.file.path, {
+                folder: 'lms',
+                width: 250, 
+                height: 250,
+                gravity: 'faces',
+                crop: 'fill'
+            });
+
+            if(result) {
+                user.avatar.public_id = result.public_id;
+                user.avatar.secure_url = result.secure_url;
+
+                // Remove file from server
+                fs.rm(`uploads/${req.file.filename}`);
+            };
+        } catch (error) {
+            return next(new AppEroor(error || 'file not uploaded, please try again', 500));
+        };
+    };
 
     // Saves the user to the database and generates a JWT token for authentication.
     await user.save();
@@ -56,7 +80,7 @@ const register = async (req, res, next) => {
 
 
 // login
-const login = async (req, res) => {
+const login = async (req, res, next) => {
     try {
         // Allows users to log in with their email and password.
         const { email, password } = req.body;
@@ -82,7 +106,7 @@ const login = async (req, res) => {
             user,
         });
     } catch (error) {
-        return next(new AppEroor(e.message, 500));
+        return next(new AppEroor(error.message, 500));
     }
 };
 

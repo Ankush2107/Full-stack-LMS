@@ -28,10 +28,6 @@ const userSchema = new Schema({
         minLength: [8, "Password must be atleast 8 characters"],
         select: false  // Don't give password
     },
-    subscription: {
-        id: String,
-        status: String,
-    },
     avatar: {
         public_id: {
             type: String
@@ -51,7 +47,7 @@ const userSchema = new Schema({
 
 
 //  Hashes the password before saving
-userSchema.pre('save', async (next) => {
+userSchema.pre('save', async function (next){
     if(!this.isModified('password')) {
         return next();
     }
@@ -61,17 +57,17 @@ userSchema.pre('save', async (next) => {
 
 // Adds methods to the User model for JWT token generation and password comparison.
 userSchema.methods = {
-    generateJWTToken: async () => {
+    generateJWTToken: async function (){
         // Generates a JWT token for the user.
         return await jwt.sign(
           { id: this._id, role: this.role, subscription: this.subscription }, // payload
           process.env.JWT_SECRET, // token secret
           {
-            expiresIn: process.env.JWT_EXPIRY,  // configuration object
+            expiresIn: '1800s',  // configuration object
           }
         );
     },
-    comparePassword: async (plainTextPassword) => {
+    comparePassword: async function (plainTextPassword){
         // Compares a plain text password with the hashed password.
         return await bcrypt.compare(plainTextPassword, this.password);        
     }
