@@ -49,6 +49,8 @@ const userSchema = new Schema({
     forgetPasswordExpiry: Date
 }, { timestamps: true });
 
+
+//  Hashes the password before saving
 userSchema.pre('save', async (next) => {
     if(!this.isModified('password')) {
         return next();
@@ -56,17 +58,21 @@ userSchema.pre('save', async (next) => {
     this.password = await bcrypt.hash(this.password, 10);
 });
 
+
+// Adds methods to the User model for JWT token generation and password comparison.
 userSchema.methods = {
-    generateJWTToken: async function () {
+    generateJWTToken: async () => {
+        // Generates a JWT token for the user.
         return await jwt.sign(
-          { id: this._id, role: this.role, subscription: this.subscription },
-          process.env.JWT_SECRET,
+          { id: this._id, role: this.role, subscription: this.subscription }, // payload
+          process.env.JWT_SECRET, // token secret
           {
-            expiresIn: process.env.JWT_EXPIRY,
+            expiresIn: process.env.JWT_EXPIRY,  // configuration object
           }
         );
     },
     comparePassword: async (plainTextPassword) => {
+        // Compares a plain text password with the hashed password.
         return await bcrypt.compare(plainTextPassword, this.password);        
     }
 }
