@@ -8,6 +8,7 @@ const cookieOptions = {
     secure: true
 }
 
+// register
 const register = async (req, res, next) => {
     const { fullName, email, password } = req.body;
 
@@ -52,16 +53,64 @@ const register = async (req, res, next) => {
     })
 };
 
-const login = (req, res) => {
+// login
+const login = async (req, res) => {
+    try {
+        const { emai, password } = req.body;
 
+        if(!email || !password) {
+            return next(new AppEroor('All fields are required', 400));
+        };
+
+        const user = await User.findOne({
+            email
+        }).select('+password');
+
+        if(!user || !user.comparePassword(password)) {
+            return next (new AppEroor('Email or password does not match', 400))
+        }
+
+        const token = await user.generateJWTToken();
+        user.password = undefined;
+
+        res.cookie('token', token, cookieOptions);
+
+        res.status(200).json({
+            success: true,
+            message: 'User loggedin successfully',
+            user,
+        });
+    } catch (error) {
+        return next(new AppEroor(e.message, 500));
+    }
 };
 
 const logout = (req, res) => {
+    res.cookie('token', null, {
+        secure: true,
+        maxAge: 0, 
+        httpOnly: true
+    });
 
+    res.status(200).json({
+        success: true,
+        message: 'User logged out successfully'
+    })
 };
 
-const getProfile = (req, res) => {
+const getProfile = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(userId);
 
+        res.status(200).json({
+            success: true,
+            manage: 'User details',
+            user, 
+        })
+    } catch (error) {
+        return next (new AppEroor('Failed to fetch profile', 400))
+    }
 };
 
 
@@ -70,4 +119,4 @@ export {
     login,
     logout,
     getProfile
-}
+};
