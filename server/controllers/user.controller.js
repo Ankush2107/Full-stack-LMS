@@ -1,7 +1,8 @@
-import AppEroor from "../utils/error.util.js";
+import AppError from "../utils/error.util.js";
 import User from "../models/user.model.js";
 import cloudinary from 'cloudinary';
 import fs from 'fs/promises';
+import sendEmail from "../utils/sendEmail.js";
 
 // Ensures that the authentication token cookie is secure and has an expiration time.
 const cookieOptions = {
@@ -17,13 +18,13 @@ const register = async (req, res, next) => {
     // Ensures that all required registration fields are provided.
     // Prevents incomplete user registrations.
     if(!fullName || !email || !password) {
-        return next (new AppEroor('All feilds are required', 400));
+        return next (new AppError('All feilds are required', 400));
     }
 
     // Checks if a user with the provided email already exists.
     const userExists = await User.findOne({ email });
     if(userExists) {
-        return next(new AppEroor("Email already exists", 400));
+        return next(new AppError("Email already exists", 400));
     }
 
     // Creates a new user with the provided details.
@@ -37,7 +38,7 @@ const register = async (req, res, next) => {
         }
     })
     if(!user) {
-        return next(new AppEroor("User registration failed please try again", 400))
+        return next(new AppError("User registration failed please try again", 400))
     }
 
     // File upload
@@ -60,7 +61,7 @@ const register = async (req, res, next) => {
                 fs.rm(`uploads/${req.file.filename}`);
             };
         } catch (error) {
-            return next(new AppEroor(error || 'file not uploaded, please try again', 500));
+            return next(new AppError(error || 'file not uploaded, please try again', 500));
         };
     };
 
@@ -87,13 +88,13 @@ const login = async (req, res, next) => {
 
         // Ensures that all required login fields are provided.
         if(!email || !password) {
-            return next(new AppEroor('All fields are required', 400));
+            return next(new AppError('All fields are required', 400));
         };
 
         // Finds the user by email and checks if the provided password matches.
         const user = await User.findOne({ email }).select('+password');
         if(!user || !user.comparePassword(password)) {
-            return next (new AppEroor('Email or password does not match', 400))
+            return next (new AppError('Email or password does not match', 400))
         }
 
         // Generates a new JWT token for the logged-in user and sets the cookie in the response.
@@ -106,7 +107,7 @@ const login = async (req, res, next) => {
             user,
         });
     } catch (error) {
-        return next(new AppEroor(error.message, 500));
+        return next(new AppError(error.message, 500));
     }
 };
 
@@ -139,8 +140,69 @@ const getProfile = async (req, res) => {
             user, 
         })
     } catch (error) {
-        return next (new AppEroor('Failed to fetch profile', 400))
+        return next (new AppError('Failed to fetch profile', 400))
     }
 };
 
-export { register, login, logout, getProfile };
+const forgotPassword = async (req, res, next) => {
+    // Extracting email from request body
+    const { email } = req.body;
+  
+    // If no email send email required message
+    if (!email) {
+      return next(new AppError('Email is required', 400));
+    }
+  
+    // Finding the user via email
+    const user = await User.findOne({ email });
+  
+    // If no email found send the message email not found
+    if (!user) {
+      return next(new AppError('Email not registered', 400));
+    }
+  
+    // Generating the reset token via the method we have in user model
+    const resetToken = await user.generatePasswordResetToken();
+  
+    // Saving the forgotPassword* to DB
+    await user.save();
+  
+    // constructing a url to send the correct data
+    /**HERE
+     * req.protocol will send if http or https
+     * req.get('host') will get the hostname
+     * the rest is the route that we will create to verify if token is correct or not
+     */
+    // const resetPasswordUrl = `${req.protocol}://${req.get(
+    //   "host"
+    // )}/api/v1/user/reset/${resetToken}`;
+    const resetPasswordUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+  
+    // We here need to send an email to the user with the token
+    const subject = 'Reset Password';
+    const message = `You can reset your password by clicking <a href=${resetPasswordUrl} target="_blank">Reset your password</a>\nIf the above link does not work for some reason then copy paste this link in new tab ${resetPasswordUrl}.\n If you have not requested this, kindly ignore.`;
+  
+    try {
+      await sendEmail(email, subject, message);
+  
+      // If email sent successfully send the success response
+      res.status(200).json({
+        success: true,
+        message: `Reset password token has been sent to ${email} successfully`,
+      });
+    } catch (error) {
+      // If some error happened we need to clear the forgotPassword* fields in our DB
+      user.forgetPasswordToken = undefined;
+      user.forgetPasswordExpiry = undefined;
+  
+      await user.save();
+  
+      return next(new AppError(error.message || 'Something went wrong, please try again.', 500));
+    }
+  };
+
+const resetPassword = () => {
+
+}
+
+export { register, login, logout, getProfile, forgotPassword, resetPassword };
