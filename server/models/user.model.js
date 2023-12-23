@@ -42,8 +42,8 @@ const userSchema = new Schema({
         enum: [ "USER", "ADMIN" ],
         default: 'USER'
     },
-    forgetPasswordToken: String,
-    forgetPasswordExpiry: Date
+    forgotPasswordToken: String,
+    forgotPasswordExpiry: Date
 }, { timestamps: true });
 
 
