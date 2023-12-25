@@ -1,15 +1,15 @@
 import { Router } from 'express';
-import { getProfile, login, logout, register, forgotPassword, resetPassword, changePassword, updateUser } from '../controllers/user.controller.js';
+import { getProfile, loginUser, logoutUser, registerUser, forgotPassword, resetPassword, changePassword, updateUser } from '../controllers/user.controller.js';
 import { isLoggedIn } from '../middlewares/auth.middleware.js';
 import upload from '../middlewares/multer.middleware.js';
 
 const router = Router();
 
-router.post('/register', upload.single("avatar"), register);
+router.post('/register', upload.single("avatar"), registerUser);
 
-router.post('/login', login);
+router.post('/login', loginUser);
 
-router.get('/logout', logout);
+router.get('/logout', logoutUser);
 
 router.get('/me', isLoggedIn, getProfile);
 

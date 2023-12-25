@@ -1,4 +1,4 @@
-import AppEroor from "../utils/error.util.js";
+import AppEroor from "../utils/AppError.js";
 import  jwt  from "jsonwebtoken";
 
 // Defines a middleware function for checking user authentication status.
