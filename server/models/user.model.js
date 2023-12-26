@@ -58,15 +58,19 @@ userSchema.pre('save', async function (next){
 
 // Adds methods to the User model for JWT token generation and password comparison.
 userSchema.methods = {
-    generateJWTToken: async function (){
+    generateJWTToken: async function () {
         // Generates a JWT token for the user.
-        return await jwt.sign(
-          { id: this._id, role: this.role, subscription: this.subscription }, // payload
-          process.env.JWT_SECRET, // token secret
-          {
-            expiresIn: '1800s',  // configuration object
-          }
-        );
+        const expiresIn = '1800s'; // 30 minutes
+        const payload = { id: this._id, role: this.role, subscription: this.subscription };
+
+        try {
+            // Generate a new token
+            const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
+
+            return token;
+        } catch (error) {
+            throw new Error('Error generating JWT token');
+        }
     },
     comparePassword: async function (plainTextPassword){
         // Compares a plain text password with the hashed password.

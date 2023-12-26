@@ -12,4 +12,12 @@ const isLoggedIn = async (req, res, next) => {
     next();
 }
 
-export { isLoggedIn };
+const authorizedRoles = (...roles) => async (req, res, next) => {
+    const currentUserRole = req.user.role;
+    if(!roles.includes(currentUserRole)) {
+        return next(new AppError('You do not have permission', 403));
+    }
+    next();
+}
+
+export { isLoggedIn, authorizedRoles };
