@@ -137,3 +137,17 @@ export {
     cancelSubscription,
     allPayments
 }
+
+
+
+// To get the `RAZORPAY_KEY_ID`, you need to generate API keys in your Razorpay Dashboard. Here are the steps to generate API keys:
+
+// 1. Log in to your Razorpay Dashboard with your credentials.
+// 2. Once you are logged in, select the mode (Test or Live) for which you want to generate the API key.
+// - Test Mode: The test mode is a simulation mode that you can use to test your integration flow. Your customers will not be able to make payments in this mode.
+// - Live Mode: When your integration is complete, switch to live mode and generate live mode API keys. Replace test mode keys with live mode keys in the integration to accept payments from customers.
+// 3. Navigate to Account & Settings → API Keys (under Website and app settings).
+// 4. Click on the Generate Key button to generate the API key for the selected mode.
+// 5. A pop-up page will appear with your `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET`.
+
+// Make sure to securely store your API keys and never share them publicly. The `RAZORPAY_KEY_ID` is used to identify your account and authenticate API requests made to Razorpay.
