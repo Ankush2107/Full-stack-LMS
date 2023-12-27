@@ -15,7 +15,7 @@ const getAllCourses = async (req, res, next) => {
     } catch (error) {
         return next(new AppError(e.message, 500));
     }
-}
+};
 
 const getLecturesByCourseId = async (req, res, next) => {
     try {
@@ -33,7 +33,7 @@ const getLecturesByCourseId = async (req, res, next) => {
     } catch (error) {
         return next(new AppError(e.message, 500));
     }
-}
+};
 
 const createCourse = async (req, res, next) => {
     const { title, description, category, createdBy } = req.body;
@@ -58,18 +58,22 @@ const createCourse = async (req, res, next) => {
         }
 
         if (req.file) {
-            const result = await cloudinary.v2.uploader.upload(req.file.path, {
-                folder: 'lms'
-            });
-
-            if (!result) {
-                return next(new AppError("Failed to upload image to Cloudinary.", 500));
+            try {
+                const result = await cloudinary.v2.uploader.upload(req.file.path, {
+                    folder: 'lms'
+                });
+    
+                if (!result) {
+                    return next(new AppError("Failed to upload image to Cloudinary.", 500));
+                }
+    
+                course.thumbnail.public_id = result.public_id;
+                course.thumbnail.secure_url = result.secure_url;
+    
+                fs.rm(`uploads/${req.file.filename}`);
+            } catch (e) {
+                return next(new AppError(e.message, 500));
             }
-
-            course.thumbnail.public_id = result.public_id;
-            course.thumbnail.secure_url = result.secure_url;
-
-            fs.rm(`uploads/${req.file.filename}`);
         }
 
         await course.save();
@@ -83,7 +87,6 @@ const createCourse = async (req, res, next) => {
         return next(new AppError("An unexpected error occurred.", 500));
     }
 };
-
 
 const updateCourse = async (req, res, next) => {
     try {
@@ -128,10 +131,55 @@ const removeCourse = async (req, res, next) => {
     }
 };
 
+const addLectureToCourseById = async (req, res, next) => {
+    try {
+        const { title, description } =  req.body;
+        const { id } = req.params;
+        if(!title || !description) {
+            return next(new AppError('All fields are required', 400));
+        };
+        const course = await Course.findById(id);
+        if(!course) {
+            return next(new AppError('Course with given id does not exist', 404));
+        }
+        const lectureData = {
+            title,
+            description,
+            lecture: {}
+        }
+        if(req.file) {
+            try {
+                const result = await cloudinary.v2.uploader.upload(req.file.path, {
+                    folder: 'lms'
+                });
+                if (!result) {
+                    return next(new AppError("Failed to upload image to Cloudinary.", 500));
+                }
+                lectureData.lecture.public_id = result.public_id;
+                lectureData.lecture.secure_url = result.secure_url;
+                fs.rm(`uploads/${req.file.filename}`);
+            } catch (e) {
+                return next(new AppError(e.message, 500));
+            }
+        }
+        course.lectures.push(lectureData);
+        course.numberOfLectures = course.lectures.length;
+        await course.save();
+        res.status(200).json({
+            success: true,
+            message: 'Lecture successfully added',
+            course
+        })
+    } catch (e) {
+        return next(new AppError(e.message, 500));
+    }
+};
+
 export {
     getAllCourses,
     getLecturesByCourseId,
     createCourse,
     updateCourse,
-    removeCourse
-}
+    removeCourse,
+    addLectureToCourseById
+};
