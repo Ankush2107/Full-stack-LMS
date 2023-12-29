@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getProfile, loginUser, logoutUser, registerUser, forgotPassword, resetPassword, changePassword, updateUser } from '../controllers/user.controller.js';
-import { isLoggedIn } from '../middlewares/auth.middleware.js';
+import { authorizedRoles, isLoggedIn } from '../middlewares/auth.middleware.js';
 import upload from '../middlewares/multer.middleware.js';
 
 const router = Router();

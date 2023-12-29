@@ -21,17 +21,17 @@ const cookieOptions = {
  */
 export const registerUser = asyncHandler(async (req, res, next) => {
   // Destructuring the necessary data from req object
-  const { fullName, email, password } = req.body;
+  const { fullName, email, password, role } = req.body;
 
   // Check if the data is there or not, if not throw error message
-  if (!fullName || !email || !password) {
-    return next(new AppError('All fields are required', 400));
+  if (!fullName || !email || !password || !role) {
+    return next(new AppError('All fields are required, including role', 400));
   }
 
   // Check if the user exists with the provided email
   const userExists = await User.findOne({ email });
 
-  // If user exists send the reponse
+  // If user exists send the response
   if (userExists) {
     return next(new AppError('Email already exists', 409));
   }
@@ -41,6 +41,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
     fullName,
     email,
     password,
+    role, // Include the role here
     avatar: {
       public_id: email,
       secure_url:
@@ -55,14 +56,14 @@ export const registerUser = asyncHandler(async (req, res, next) => {
     );
   }
 
-  // Run only if user sends a file
+  // Run only if the user sends a file
   if (req.file) {
     try {
       const result = await cloudinary.v2.uploader.upload(req.file.path, {
         folder: 'lms', // Save files in a folder named lms
         width: 250,
         height: 250,
-        gravity: 'faces', // This option tells cloudinary to center the image around detected faces (if any) after cropping or resizing the original image
+        gravity: 'faces', // This option tells Cloudinary to center the image around detected faces (if any) after cropping or resizing the original image
         crop: 'fill',
       });
 
@@ -101,6 +102,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
     user,
   });
 });
+
 
 /**
  * @LOGIN
@@ -356,7 +358,7 @@ export const changePassword = asyncHandler(async (req, res, next) => {
  */
 export const updateUser = asyncHandler(async (req, res, next) => {
   // Destructuring the necessary data from the req object
-  const { fullName } = req.body;
+  const { fullName, role } = req.body; // Add role here
   const { id } = req.params;
 
   const user = await User.findById(id);
@@ -367,6 +369,11 @@ export const updateUser = asyncHandler(async (req, res, next) => {
 
   if (fullName) {
     user.fullName = fullName;
+  }
+
+  // Add logic to update the role if it's present in the request body
+  if (role) {
+    user.role = role;
   }
 
   // Run only if user sends a file
@@ -398,12 +405,11 @@ export const updateUser = asyncHandler(async (req, res, next) => {
       );
     }
   }
-
   // Save the user object
   await user.save();
-
   res.status(200).json({
     success: true,
     message: 'User details updated successfully',
   });
 });
+
