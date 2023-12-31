@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-const intialState = {
+const initialState = {
     isLoggedIn: localStorage.getItem('isLoggedIn') || false,
     role: localStorage.getItem('role') || "",
     data: localStorage.getItem('data') || {}
