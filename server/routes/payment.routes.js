@@ -1,12 +1,12 @@
 import { Router} from 'express';
-import { getRazorPayApiKey, buySubscription, verifySubscription, cancelSubscription, allPayments } from '../controllers/payment.controller.js';
+import { getPaymentApiKey, buySubscription, verifySubscription, cancelSubscription, getAllPayments } from '../controllers/payment.controller.js';
 import { authorizedRoles, isLoggedIn } from '../middlewares/auth.middleware.js';
 const router = Router();
 
-router.route('/razorpay-key')
+router.route('/payment-key')
     .get(
         isLoggedIn,
-        getRazorPayApiKey
+        getPaymentApiKey
     );
 
 router.route('/subscribe')
@@ -31,7 +31,7 @@ router.route('/')
     .get(
         isLoggedIn,
         authorizedRoles('ADMIN'),
-        allPayments
+        getAllPayments
     );
     
 export default router;    

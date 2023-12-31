@@ -1,4 +1,4 @@
-import AppEroor from "../utils/AppError.js";
+import AppError from "../utils/AppError.js";
 import  jwt  from "jsonwebtoken";
 
 // Defines a middleware function for checking user authentication status.
@@ -20,4 +20,12 @@ const authorizedRoles = (...roles) => async (req, res, next) => {
     next();
 }
 
-export { isLoggedIn, authorizedRoles };
+const authorisedSubscriber = async (req, res, next) => {
+    const subscription = req.user.subscription;
+    const currentUserRole = req.user.role;
+    if(currentUserRole !== 'ADMIN' || subscription.status !== 'active') {
+        return next(new AppError('Please subscribe to access the route', 403));
+    };
+};
+
+export { isLoggedIn, authorizedRoles, authorisedSubscriber };
