@@ -33,19 +33,19 @@ npm run dev
 1. install tailwindcss
 
 ```
-npm install -D tailwindcss
+npm install -D tailwindcss postcss autoprefixer
 ```
 
 2. Create tailwind config file
 
 ```
-npx tailwindcss init
+npx tailwindcss init -p
 ```
 
 3. Add file extension to tailwind config file in the content property.
 
 ```
-"./src/**/*.{html,js,jsx,ts,tsx}"
+"./index.html", "./src/**/*.{html,js,jsx,tx,tsx}"
 ```
 
 4. Add the tailwind directives in `index.css` file.
