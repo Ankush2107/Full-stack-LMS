@@ -35,6 +35,7 @@ const buySubscription = async (req, res, next) => {
       const subscription = await razorpay.subscriptions.create({
         plan_id: process.env.RAZORPAY_PLAN_ID,
         customer_notify: 1,
+        total_count: 1,
       });
   
       // Check if the subscription creation was successful
@@ -53,6 +54,7 @@ const buySubscription = async (req, res, next) => {
         subscription_id: subscription.id,
       });
     } catch (error) {
+      console.error('Error in buySubscription:', error);
       return next(new AppError(error.message, 500));
     }
   };
