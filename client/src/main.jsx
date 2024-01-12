@@ -2,13 +2,17 @@ import './index.css'
 
 import ReactDOM from 'react-dom/client'
 import { ToastBar } from 'react-hot-toast';
+import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
 import App from './App.jsx'
+import store from './Redux/store.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <BrowserRouter>
-        <App />
-        <ToastBar/>
-    </BrowserRouter>
+    <Provider store={store}>
+        <BrowserRouter>
+            <App />
+            <ToastBar/>
+        </BrowserRouter>
+    </Provider>
 )
