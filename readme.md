@@ -17,7 +17,7 @@ cd client
 3. install dependencies
 
 ```
-npm i
+npm install
 ```
 
 4. run the server
