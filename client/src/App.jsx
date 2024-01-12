@@ -1,14 +1,12 @@
-// import { Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
-import Footer from "./components/Footer";
+import Home from "./pages/Home.jsx";
 
 function App() {
   return (
-    // <Routes>
-    //     {/* <Route path="/" element={<Home/>}></Route> */}
-    // </Routes>
-
-    <Footer/>
+    <Routes>
+        <Route path="/" element={<Home/>}></Route>
+    </Routes> 
   )
 }
 
