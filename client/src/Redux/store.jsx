@@ -1,19 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import authReducer from './slices/authSlice';
-import courseReducer from './slices/courseSlice';
-import lectureReducer from './slices/lectureSlice';
-import razorpayReducer from './slices/razorPaySlice';
-
+import authSliceReducer from './Slices/AuthSlice';
 
 const store = configureStore({
     reducer: {
-        auth: authReducer,
-        course: courseReducer,
-        razorpay: razorpayReducer,
-        lecture: lectureReducer
+        auth: authSliceReducer
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}),
     devTools: true
 });
 

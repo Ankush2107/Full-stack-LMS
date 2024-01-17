@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 import homePageMainImage from '../assets/Images/homePageMainImage.png';
 import HomeLayouts from "../layouts/HomeLayouts";
-function Home() {
+function HomePage() {
 
     return (
         <HomeLayouts>
@@ -36,4 +36,4 @@ function Home() {
     )
 }
 
-export default Home;
+export default HomePage;
