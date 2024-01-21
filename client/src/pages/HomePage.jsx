@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 
 import homePageMainImage from '../assets/Images/homePageMainImage.png';
-import HomeLayouts from "../layouts/HomeLayouts";
+import HomeLayout from "../layouts/HomeLayout";
 function HomePage() {
 
     return (
-        <HomeLayouts>
+        <HomeLayout>
             <div className="pt-10 text-white flex items-center justify-center gap-10 mx-16 h-[90vh]">
                 <div className="w-1/2 space-y-6">
                     <h1 className="text-5xl font-semibold">Find out best <span className="text-yellow-500 font-bold">Online courses</span></h1>
@@ -32,7 +32,7 @@ function HomePage() {
                 </div>
 
             </div>
-        </HomeLayouts>
+        </HomeLayout>
     )
 }
 
