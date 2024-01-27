@@ -35,7 +35,7 @@ const AboutUsPage = () => {
         </div>
 
         <div className="carousel w-1/2 m-auto my-16">
-          {celebrities && celebrities.map(celebrity => <CrouselSlide {...celebrity} key={celebrity.slideNumber} totalSlide={celebrity.length}  /> )}
+          {celebrities && celebrities.map(celebrity => <CrouselSlide {...celebrity} key={celebrity.slideNumber} totalSlide={celebrities.length}  /> )}
         </div>
       </div>
     </HomeLayout>

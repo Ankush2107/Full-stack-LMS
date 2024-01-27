@@ -21,11 +21,11 @@ const cookieOptions = {
  */
 export const registerUser = asyncHandler(async (req, res, next) => {
   // Destructuring the necessary data from req object
-  const { fullName, email, password, role } = req.body;
+  const { fullName, email, password } = req.body;
 
   // Check if the data is there or not, if not throw error message
-  if (!fullName || !email || !password || !role) {
-    return next(new AppError('All fields are required, including role', 400));
+  if (!fullName || !email || !password ) {
+    return next(new AppError('All fields are required', 400));
   }
 
   // Check if the user exists with the provided email
@@ -41,7 +41,6 @@ export const registerUser = asyncHandler(async (req, res, next) => {
     fullName,
     email,
     password,
-    role, // Include the role here
     avatar: {
       public_id: email,
       secure_url:
