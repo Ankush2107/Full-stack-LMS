@@ -5,14 +5,16 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 import HomeLayout from "../layouts/HomeLayout";
+import { createAccount } from "../Redux/slices/authSlice";
 
 const Signup = () => {
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [previewImage, setPreviewImage] = useState("");
     const [signUpData, setSignUpData] = useState({
-        fullname: "",
+        fullName: "",
         email: "",
         password: "",
         avatar: ""
@@ -31,6 +33,7 @@ const Signup = () => {
     function getImage(e) {
         e.preventDefault();
 
+        // getting the image
         const uploadedImage = e.target.files[0];
 
         if(uploadedImage) {
@@ -47,16 +50,16 @@ const Signup = () => {
         }
     }
 
-    function createNewAccount(e) {
+    async function createNewAccount(e) {
         e.preventDefault();
 
-        if(!signUpData.email || !signUpData.password || !signUpData.fullname || !signUpData.avatar) {
+        if(!signUpData.email || !signUpData.password || !signUpData.fullName || !signUpData.avatar) {
             toast.error("Please fill all details");
             return;
         }
 
         // checking name field length
-        if(signUpData.fullname.length < 5) {
+        if(signUpData.fullName.length < 5) {
             toast.error("Name should be atleast of 5 character")
             return;
         }
@@ -74,16 +77,19 @@ const Signup = () => {
         }
 
         const formData = new FormData();
-        formData.append("fullname", signUpData.fullname);
+        formData.append("fullName", signUpData.fullName);
         formData.append("email", signUpData.email);
         formData.append("password", signUpData.password);
         formData.append("avatar", signUpData.avatar);
 
         // dispatch create account action
-        navigate('/');
+        const response = await dispatch(createAccount(formData));
+        console.log(response);
+        if(response?.payload?.success) 
+           navigate('/');
 
         setSignUpData({
-            fullname: "",
+            fullName: "",
             email: "",
             password: "",
             avatar: ""
@@ -113,12 +119,12 @@ const Signup = () => {
                     accept=".jpg, .jpeg, .png, .svg"
                 />
                 <div className="flex flex-col gap-1">
-                    <label htmlFor="fullname" className="font-semibold">Name</label>   
+                    <label htmlFor="fullName" className="font-semibold">Name</label>   
                     <input 
                         type="text"
                         required
-                        name="fullname"
-                        id="fullname"
+                        name="fullName"
+                        id="fullName"
                         placeholder="Enter your name..."
                         className="bg-transparent px-2 py-1 border"
                         onChange={handleUserInput}
