@@ -109,6 +109,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
  * @ACCESS Public
  */
 export const loginUser = asyncHandler(async (req, res, next) => {
+  
   // Destructuring the necessary data from req object
   const { email, password } = req.body;
 
