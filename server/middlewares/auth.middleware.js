@@ -1,13 +1,13 @@
 import AppError from "../utils/AppError.js";
-import  jwt  from "jsonwebtoken";
+import  JWT  from "jsonwebtoken";
 
 // Defines a middleware function for checking user authentication status.
 const isLoggedIn = async (req, res, next) => {
     const { token } = req.cookies;
     if(!token) {
-        return next(new AppEroor('Unauthenticated, pleaselogin admin', 400));
+        return next(new AppEroor('Unauthenticated, please login admin', 401));
     }
-    const userDetails = await jwt.verify(token, process.env.JWT_SECRET);
+    const userDetails = await JWT.verify(token, process.env.JWT_SECRET);
     req.user = userDetails;
     next();
 }

@@ -110,39 +110,43 @@ export const registerUser = asyncHandler(async (req, res, next) => {
  */
 export const loginUser = asyncHandler(async (req, res, next) => {
   
-  // Destructuring the necessary data from req object
-  const { email, password } = req.body;
+  try {
+    // Destructuring the necessary data from req object
+    const { email, password } = req.body;
 
-  // Check if the data is there or not, if not throw error message
-  if (!email || !password) {
-    return next(new AppError('Email and Password are required', 400));
-  }
+    // Check if the data is there or not, if not throw error message
+    if (!email || !password) {
+      return next(new AppError('Email and Password are required', 400));
+    }
 
-  // Finding the user with the sent email
-  const user = await User.findOne({ email }).select('+password');
+    // Finding the user with the sent email
+    const user = await User.findOne({ email }).select('+password');
 
-  // If no user or sent password do not match then send generic response
-  if (!(user && (await user.comparePassword(password)))) {
-    return next(
-      new AppError('Email or Password do not match or user does not exist', 401)
-    );
-  }
+    // If no user or sent password do not match then send generic response
+    if (!user && await user.comparePassword(password)) {
+      return next(
+        new AppError('Email or Password do not match or user does not exist', 401)
+      );
+    }
 
-  // Generating a JWT token
-  const token = await user.generateJWTToken();
+    // Generating a JWT token
+    const token = await user.generateJWTToken();
 
-  // Setting the password to undefined so it does not get sent in the response
-  user.password = undefined;
+    // Setting the password to undefined so it does not get sent in the response
+    user.password = undefined;
 
-  // Setting the token in the cookie with name token along with cookieOptions
-  res.cookie('token', token, cookieOptions);
+    // Setting the token in the cookie with name token along with cookieOptions
+    res.cookie('token', token, cookieOptions);
 
-  // If all good send the response to the frontend
-  res.status(200).json({
-    success: true,
-    message: 'User logged in successfully',
-    user,
-  });
+    // If all good send the response to the frontend
+    res.status(200).json({
+      success: true,
+      message: 'User logged in successfully',
+      user,
+    });
+  } catch (error) {
+      return next(new AppError("Email or password does not match", 500));
+    }
 });
 
 /**
@@ -171,14 +175,18 @@ export const logoutUser = asyncHandler(async (_req, res, _next) => {
  * @ACCESS Private(Logged in users only)
  */
 export const getProfile = asyncHandler(async (req, res, next) => {
-  // Finding the user using the id from modified req object
-  const user = await User.findById(req.user.id);
+  try {
+    // Finding the user using the id from modified req object
+    const user = await User.findById(req.user.id);
 
-  res.status(200).json({
-    success: true,
-    message: 'User details',
-    user,
-  });
+    res.status(200).json({
+      success: true,
+      message: 'User details',
+      user,
+    });
+  } catch (error) {
+    return next(new AppError("Failed to fetch profile")); 
+  }
 });
 
 /**

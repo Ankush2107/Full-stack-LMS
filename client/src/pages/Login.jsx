@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { toast } from 'react-hot-toast';
-import { BsPersonCircle } from "react-icons/bs";
+// import { BsPersonCircle } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 import HomeLayout from "../layouts/HomeLayout";
 import { login } from "../Redux/slices/authSlice";
 
-const Signup = () => {
+const Login = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -29,13 +29,13 @@ const Signup = () => {
     async function onLogin(e) {
         e.preventDefault();
         if(!loginData.email || !loginData.password) {
-            toast.error("Please fill all details");
+            toast.error("Please fill all the details");
             return;
         }
 
         // dispatch create account action
         const response = await dispatch(login(loginData));
-        console.log(response);
+        console.log(response.payload);
         if(response?.payload?.success) 
            navigate('/');
 
@@ -89,4 +89,4 @@ const Signup = () => {
   );
 }
 
-export default Signup;
+export default Login;

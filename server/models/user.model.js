@@ -20,7 +20,7 @@ const userSchema = new Schema({
         unique: true,
         match: [
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            'Please fill in a valid email address',
+            'Please fill a valid email address',
         ],// Matches email against regex
     },
     password: {
@@ -65,7 +65,12 @@ userSchema.methods = {
     generateJWTToken: async function () {
         // Generates a JWT token for the user.
         const expiresIn = '1800s'; // 30 minutes
-        const payload = { id: this._id, role: this.role, subscription: this.subscription };
+        const payload = { 
+            id: this._id, 
+            email: this.email,
+            role: this.role, 
+            subscription: this.subscription 
+        };
 
         try {
             // Generate a new token
