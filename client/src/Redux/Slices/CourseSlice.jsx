@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import axiosInstance from '../../Helpers/axiosInstance';
 
 const initialState = {
-    courseData = []
+    courseData :[]
 }
 
 export const getAllCourses = createAsyncThunk("/course/get", async () => {
@@ -25,7 +25,7 @@ const courseSlice = createSlice({
     name: "courses",
     initialState,
     reducers: {},
-    extraReducers: (builder) => {
+    extraReducers: () => {
 
     }
 })
