@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'; 
 
+import CourseCard from '../../components/CourseCard';
 import HomeLayout from "../../layouts/HomeLayout"
 import { getAllCourses } from '../../Redux/Slices/CourseSlice';
 
@@ -28,7 +29,7 @@ function CourseList() {
                 <div className="mb-10 flex flex-wrap gap-14">
                     {courseData?.map((element) => {
                         console.log(element);
-                        return <Coursecard key={element._id} data={element} />
+                        return <CourseCard key={element._id} data={element} />
                     })}
                 </div>
 

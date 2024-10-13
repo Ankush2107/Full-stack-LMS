@@ -15,7 +15,10 @@ export const getAllCourses = createAsyncThunk("/course/get", async () => {
             success: "Course loaded successfully",
             error: "Failed to get the courses"
         });
-        return (await response).data.courses;
+        // return (await response).data.courses;
+        const finalRes = (await response).data.courses;
+        console.log("Final response", finalRes);
+        return finalRes;
     } catch (error) {
         toast.error(error?.response?.data?.message);
     }
@@ -25,8 +28,15 @@ const courseSlice = createSlice({
     name: "courses",
     initialState,
     reducers: {},
-    extraReducers: () => {
-
+    extraReducers: (builder) => {
+        builder
+            .addCase(getAllCourses.fulfilled, (state, action) => {
+                if(action.payload) {
+                    console.log("Action is", action);
+                    state.courseData = [...action.payload];
+                    console.log("CourseData is", state.courseData);
+                }
+            })
     }
 })
 
