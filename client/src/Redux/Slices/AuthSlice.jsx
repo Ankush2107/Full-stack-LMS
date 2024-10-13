@@ -6,22 +6,22 @@ import axiosInstance from '../../Helpers/axiosInstance';
 const initialState = {
     isLoggedIn: localStorage.getItem('isLoggedIn') || false,
     role: localStorage.getItem('role') || "",
-    data: localStorage.getItem('data') || {}
+    data: JSON.parse(localStorage.getItem('data')) || {}
 };
 
 export const createAccount = createAsyncThunk("/auth/signup", async (data) => {
     try {
         const response = axiosInstance.post("users/register", data);
-        // console.log(res);
-        // toast.promise(res, {
-        //     loading: "Wait! creating your account",
-        //     success: (data) => {
-        //         return data?.data?.message;
-        //     },
-        //     error: "Failed to create account"
-        // });
-        // return res.data;
         console.log(response);
+        toast.promise(response, {
+            loading: "Wait! creating your account",
+            success: (data) => {
+                return data?.data?.message;
+            },
+            error: "Failed to create account"
+        });
+        return (await response).data;
+        // console.log(response);
         
     } catch (error) {
         toast.error(error?.response?.data?.message);

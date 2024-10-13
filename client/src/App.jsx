@@ -13,6 +13,7 @@ import HomePage from './pages/HomePage';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Signup from './pages/Signup';
+import Profile from './pages/User/Profile';
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
           <Route path="/" element={<HomePage />} ></Route>
           <Route path="/about" element={<AboutUsPage />} ></Route>
           <Route path='/courses' element={<CourseList/>}></Route>
-          <Route path="*" element={<NotFound />} ></Route>
+          
           <Route path='/signup' element={<Signup/>}></Route>
           <Route path='/login' element={<Login/>}></Route>
           <Route path='/contact' element={<Contact/>} ></Route>
@@ -32,6 +33,14 @@ function App() {
           <Route element={<RequireAuth allowedRoles={["ADMIN"]} />}>
             <Route path='/course/create' element={<CreateCourse/>}></Route>
           </Route>
+
+          <Route element={<RequireAuth allowedRoles={["ADMIN", "USER"]} />}>
+          <Route path="/user/profile" element={<Profile />}>
+          </Route>
+
+          <Route path="*" element={<NotFound />} ></Route>
+        </Route>
+
 
         </Routes>
     </>
