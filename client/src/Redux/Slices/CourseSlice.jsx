@@ -1,28 +1,26 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import toast from 'react-hot-toast';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import toast from "react-hot-toast"
 
-import axiosInstance from '../../Helpers/axiosInstance';
+import axiosInstance from "../../Helpers/axiosInstance"
 
 const initialState = {
-    courseData :[]
+    courseData: []
 }
 
 export const getAllCourses = createAsyncThunk("/course/get", async () => {
     try {
-        const response = axiosInstance.get("/courses");
-        toast.promise(response, {
+        const res = axiosInstance.get("/course/");
+        toast.promise(res, {
             loading: "loading course data...",
             success: "Course loaded successfully",
             error: "Failed to get the courses"
         });
-        // return (await response).data.courses;
-        const finalRes = (await response).data.courses;
-        console.log("Final response", finalRes);
-        return finalRes;
+        return (await res).data.courses;
     } catch (error) {
         toast.error(error?.response?.data?.message);
     }
-});
+
+})
 
 const courseSlice = createSlice({
     name: "courses",
@@ -31,13 +29,14 @@ const courseSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getAllCourses.fulfilled, (state, action) => {
-                if(action.payload) {
+                if (action.payload) {
                     console.log("Action is", action);
                     state.courseData = [...action.payload];
-                    console.log("CourseData is", state.courseData);
+                    console.log("CourseData is ", state.courseData);
                 }
             })
     }
-})
+}
+)
 
 export default courseSlice.reducer;
