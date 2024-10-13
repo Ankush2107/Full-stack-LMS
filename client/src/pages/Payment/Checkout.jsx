@@ -41,7 +41,10 @@ function Checkout() {
                 paymentDetails.razorpay_subscription_id = response.razorpay_subscription_id;
                 toast.success("Payment Successful");
                 const resp = await dispatch(verifyUserPayment(paymentDetails));
-                (resp?.payload?.success) ? navigate("/checkout/success") : navigate("/checkout/fail")
+                
+                console.log("Verify payment",resp);
+                
+                resp?.payload?.success ? navigate("/checkout/success") : navigate("/checkout/fail")
             }
         }
         const paymentObject = new window.Razorpay(options);
