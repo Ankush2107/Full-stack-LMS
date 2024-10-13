@@ -1,7 +1,7 @@
 import aboutMainImage from "../assets/Images/aboutMainImage.png";
 import CrouselSlide from "../components/CrouselSlide";
 import celebrities from "../Constant/CelebrityData";
-import HomeLayout from "../layouts/HomeLayout";
+import HomeLayout from "../Layouts/HomeLayout";
 
 const AboutUsPage = () => {
 

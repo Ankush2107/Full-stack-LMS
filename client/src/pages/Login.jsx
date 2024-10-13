@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
-import HomeLayout from "../layouts/HomeLayout";
+import HomeLayout from "../Layouts/HomeLayout";
 import { login } from "../Redux/slices/authSlice";
 
 const Login = () => {

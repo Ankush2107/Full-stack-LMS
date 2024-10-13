@@ -3,6 +3,7 @@ import './App.css';
 import { Route, Routes } from 'react-router-dom';
 
 import AboutUsPage from './pages/AboutUsPage';
+import Contact from './pages/Contact';
 import CourseList from './pages/Course/CourseList';
 import HomePage from './pages/HomePage';
 import Login from './pages/Login';
@@ -19,6 +20,7 @@ function App() {
           <Route path="*" element={<NotFound />} ></Route>
           <Route path='/signup' element={<Signup/>}></Route>
           <Route path='/login' element={<Login/>}></Route>
+          <Route path='/contact' element={<Contact/>} ></Route>
         </Routes>
     </>
   )
