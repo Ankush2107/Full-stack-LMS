@@ -1,13 +1,12 @@
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux/es/hooks/useSelector";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import HomeLayout from "../../Layouts/HomeLayout";
 import { getUserData } from "../../Redux/Slice/AuthSlice";
 import { cancelCourseBundle } from "../../Redux/Slice/RazorPaySlice";
-
 function Profile() {
     const userdata = useSelector((state) => state?.auth?.data);
 
@@ -21,9 +20,6 @@ function Profile() {
         toast.success("Cancellation completed");
         navigate("/");
     }
-    // useEffect(() = {
-    //     dispatch(getUserData());
-    // })
     return (
         <HomeLayout>
             <div className="min-h-[90vh] flex items-center justify-center">

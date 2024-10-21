@@ -6,23 +6,27 @@ import { useNavigate } from "react-router-dom";
 
 import HomeLayout from "../../Layouts/HomeLayout";
 import { getRazorpayId, purchaseCourseBundle, verifyUserPayment } from "../../Redux/Slice/RazorPaySlice";
+
 function Checkout() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const razorpayKey = useSelector((state) => state?.razorpay?.key);
     const subscription_id = useSelector((state) => state?.razorpay?.subscription_id);
     const userData = useSelector((state) => state?.auth?.data);
+
     const paymentDetails = {
         razorpay_payment_id: "",
         razorpay_subscription_id: "",
         razorpay_signature: ""
     }
+
     async function handleSubscription(e) {
         e.preventDefault();
         if (!razorpayKey || !subscription_id) {
             toast.error("Something went wrong")
             return;
         }
+
         const options = {
             key: razorpayKey,
             subscription_id: subscription_id,
@@ -39,14 +43,17 @@ function Checkout() {
                 paymentDetails.razorpay_payment_id = response.razorpay_payment_id;
                 paymentDetails.razorpay_signature = response.razorpay_signature;
                 paymentDetails.razorpay_subscription_id = response.razorpay_subscription_id;
+
                 toast.success("Payment Successful");
+
                 const resp = await dispatch(verifyUserPayment(paymentDetails));
-                
+
                 console.log("Verify payment",resp);
                 
                 resp?.payload?.success ? navigate("/checkout/success") : navigate("/checkout/fail")
             }
         }
+
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();
     }
@@ -57,6 +64,7 @@ function Checkout() {
     useEffect(() => {
         load();
     }, [])
+
     return (
         <HomeLayout>
             <form
@@ -85,4 +93,5 @@ function Checkout() {
         </HomeLayout>
     );
 }
+
 export default Checkout;

@@ -4,7 +4,6 @@ import toast from "react-hot-toast";
 import axiosInstance from "../Helpers/axiosInstance";
 import { isEmail } from "../Helpers/regexMatcher";
 import HomeLayout from "../Layouts/HomeLayout";
-
 function Contact() {
     const [userInput, setUserInput] = useState({
         name: "",

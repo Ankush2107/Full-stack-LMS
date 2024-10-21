@@ -2,6 +2,7 @@ import { RxCrossCircled } from "react-icons/rx";
 import { Link } from "react-router-dom";
 
 import HomeLayout from "../../Layouts/HomeLayout";
+
 function CheckoutFailure() {
     return (
         <HomeLayout>
@@ -27,4 +28,5 @@ function CheckoutFailure() {
         </HomeLayout>
     );
 }
+
 export default CheckoutFailure;

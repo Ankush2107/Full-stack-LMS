@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import HomeLayout from "../../Layouts/HomeLayout"
 import { getUserData, updateProfile } from "../../Redux/Slice/AuthSlice";
+
 function EditProfile() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ function EditProfile() {
         avatar: undefined,
         userId: useSelector((state) => state?.auth?.data?._id)
     })
+
     function handleImageUpload(e) {
         e.preventDefault();
         const uploadedImage = e.target.files[0];
@@ -31,6 +33,7 @@ function EditProfile() {
             })
         }
     }
+
     function handleInputChange(e) {
         const { name, value } = e.target;
         setData({
@@ -38,6 +41,7 @@ function EditProfile() {
             [name]: value
         })
     }
+
     async function onFormSubmit(e) {
         e.preventDefault();
         if(!data.fullName || !data.avatar) {
@@ -48,13 +52,20 @@ function EditProfile() {
             toast.error("Name cannot be of less than 5 characters");
             return;
         }
+
         const formData = new FormData();
         formData.append("fullName", data.fullName);
         formData.append("avatar", data.avatar);
+
+
         await dispatch(updateProfile(formData));
+
         await dispatch(getUserData());
+
         navigate("/user/profile");
+
     }
+
     return (
         <HomeLayout>
             <div className="flex items-center justify-center h-[100vh]">
@@ -99,4 +110,7 @@ function EditProfile() {
         </HomeLayout>
     )
 }
+
+
+
 export default EditProfile;
